@@ -12,6 +12,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginEvent>(_onLogin);
     on<SignupEvent>(_onSignUp);
   }
+  
   Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
@@ -25,12 +26,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onSignUp(SignupEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      await signupUsecase(event.email, event.password, event.name);
-      // Since signupUsecase doesn't return a user, you might need to login after signup
-      final user = await loginUsecase(event.email, event.password);
+      final user = await signupUsecase(
+        event.name, 
+        event.email, 
+        event.password,
+        event.phone,
+      );
       emit(AuthSuccess(user));
     } catch (e) {
       emit(AuthFailure(e.toString()));
-    }
-  }
+    }  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stream_cart_test/core/routing/app_router.dart';
 import '../blocs/auth/auth_bloc.dart';
 import '../blocs/auth/auth_event.dart';
 import '../blocs/auth/auth_state.dart';
@@ -21,7 +22,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   late Animation<Offset> _slideAnimation;
   bool _isPasswordVisible = false;
   bool _rememberMe = false;
-
   @override
   void initState() {
     super.initState();
@@ -42,6 +42,26 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       ),
     );
     _animationController.forward();
+    
+    // Kiểm tra xem người dùng có vừa đăng ký không
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final route = ModalRoute.of(context);
+      if (route != null && route.settings.arguments != null) {
+        final args = route.settings.arguments as Map<String, dynamic>?;
+        if (args != null && args['fromSignup'] == true) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.'),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+            ),
+          );
+        }
+      }
+    });
   }
 
   @override
@@ -91,27 +111,31 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is AuthSuccess) {
+          if (state is AuthLoading) {
+            // Hiển thị loading indicator
+          } else if (state is AuthSuccess) {
+            // Đóng loading nếu có
+            
+            // Hiển thị thông báo đăng nhập thành công
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text('Đăng nhập thành công!'),
-                backgroundColor: Colors.green[800],
+                backgroundColor: Colors.green,
                 behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
               ),
             );
-            // Navigate to home page
+            
+            // Chuyển hướng sang trang home sau khi đăng nhập thành công
+            Navigator.of(context).pushReplacementNamed(AppRouter.home);
           } else if (state is AuthFailure) {
+            // Đóng loading nếu có
+            
+            // Hiển thị thông báo lỗi
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.error),
-                backgroundColor: Colors.red[800],
+                content: Text('Đăng nhập thất bại: ${state.message}'),
+                backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
               ),
             );
           }

@@ -20,15 +20,18 @@ class LoginEvent extends AuthEvent {
 }
 
 class SignupEvent extends AuthEvent {
-  // Event for user signup
-  // Nó là một sự kiện cho việc đăng ký của người dùng
-  // Nó chứa các thông tin cần thiết để thực hiện việc đăng ký
   final String name;
   final String email;
   final String password;
+  final String phone;
 
-  SignupEvent({required this.name, required this.email, required this.password});
+  SignupEvent({
+    required this.name, 
+    required this.email, 
+    required this.password,
+    required this.phone,
+  });
 
   @override
-  List<Object?> get props => [name, email, password]; // So sánh các thuộc tính của sự kiện
+  List<Object?> get props => [name, email, password, phone];
 }

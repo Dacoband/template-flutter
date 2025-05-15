@@ -18,6 +18,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _phoneController = TextEditingController(); // Add phone controller
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   bool _agreeToTerms = false;
@@ -53,6 +54,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _phoneController.dispose(); // Dispose phone controller
     _animationController.dispose();
     super.dispose();
   }
@@ -95,6 +97,16 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
     return null;
   }
 
+  String? _validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Vui lòng nhập số điện thoại';
+    }
+    final phoneRegex = RegExp(r'^[0-9]{10,11}$');
+    if (!phoneRegex.hasMatch(value)) {
+      return 'Số điện thoại không hợp lệ';
+    }
+    return null;
+  }
   void _submitForm() {
     if (_formKey.currentState!.validate() && _agreeToTerms) {
       context.read<AuthBloc>().add(
@@ -102,6 +114,7 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
               email: _emailController.text,
               password: _passwordController.text,
               name: _nameController.text,
+              phone: _phoneController.text,
             ),
           );
     } else if (!_agreeToTerms) {
@@ -136,21 +149,27 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-      ),
-      body: BlocConsumer<AuthBloc, AuthState>(
+      ),      body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
+            // Hiển thị thông báo đăng ký thành công
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Đăng ký thành công!'),
+                content: Text('Đăng ký thành công! Chuyển sang trang đăng nhập...'),
                 backgroundColor: Colors.green,
+                duration: Duration(seconds: 2),
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
               ),
             );
-            Navigator.of(context).pop(); // Trở về trang đăng nhập
+              // Chờ 1.5 giây trước khi chuyển sang trang đăng nhập
+            Future.delayed(const Duration(milliseconds: 1500), () {
+              if (mounted) {
+                Navigator.of(context).pushReplacementNamed('/login', arguments: {'fromSignup': true}); // Chuyển về trang đăng nhập với thông báo
+              }
+            });
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -227,6 +246,18 @@ class _SignupPageState extends State<SignupPage> with SingleTickerProviderStateM
                           validator: _validateName,
                           isDarkMode: isDarkMode,
                           textInputAction: TextInputAction.next,
+                        ),
+                        const SizedBox(height: 16),
+                        // Phone field
+                        _buildAnimatedInputField(
+                          labelText: 'Số điện thoại',
+                          hintText: '0xxxxxxxxx',
+                          controller: _phoneController,
+                          icon: Icons.phone_outlined,
+                          validator: _validatePhone,
+                          isDarkMode: isDarkMode,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.phone,
                         ),
                         const SizedBox(height: 16),
                         // Email field

@@ -2,14 +2,20 @@ class User {
   final String id;
   final String name;
   final String email;
-  final String phoneNumber;
-  final String address;
-// Về sau thêm theo các yêu cầu của API
+  final String phone;
+  final String role;
+  final String status;
+  final String? token;
+  final String? refreshToken;
+
   User({
     required this.id,
     required this.name,
     required this.email,
-    required this.phoneNumber,
-    required this.address,
+    required this.phone,
+    required this.role,
+    required this.status,
+    this.token,
+    this.refreshToken,
   });
 }

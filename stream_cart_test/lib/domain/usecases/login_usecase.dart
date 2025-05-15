@@ -5,9 +5,8 @@ class LoginUsecase {
   final AuthRepository authRepository;
 
   LoginUsecase(this.authRepository);
-  Future<User> call(String email, String password) async{
-    // Gọi phương thức login từ AuthRepository
-    final user = await authRepository.login(email, password);
-    return user;
+  
+  Future<User> call(String email, String password) async {
+    return await authRepository.login(email, password);
   }
 }

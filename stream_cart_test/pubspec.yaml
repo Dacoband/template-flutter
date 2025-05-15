@@ -38,6 +38,7 @@ dependencies:
   json_annotation: ^4.8.1 # Chuyển đổi JSON sang Dart object.
   get_it: ^7.6.0 # Dependency Injection.
   equatable: ^2.0.5 # So sánh các object với nhau BLoC.
+  flutter_carousel_widget: ^2.2.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
