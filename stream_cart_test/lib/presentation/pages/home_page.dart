@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:stream_cart_test/core/routing/app_router.dart';
 import 'package:stream_cart_test/presentation/widgets/product_card.dart';
+import 'package:stream_cart_test/presentation/widgets/cart_icon_with_badge.dart';
 import 'package:stream_cart_test/data/models/product_model.dart';
 import 'package:stream_cart_test/data/models/category_model.dart';
 
@@ -31,7 +33,8 @@ class _HomePageState extends State<HomePage> {
     CategoryModel(id: '7', name: 'Sách', iconData: Icons.menu_book),
     CategoryModel(id: '8', name: 'Đồ Chơi', iconData: Icons.toys),
     CategoryModel(id: '9', name: 'Văn Phòng', iconData: Icons.business_center),
-    CategoryModel(id: '10', name: 'Xem Thêm', iconData: Icons.more_horiz),
+    CategoryModel(id: '10', name: 'LiveStream', iconData: Icons.live_tv),
+    CategoryModel(id: '11', name: 'Xem Thêm', iconData: Icons.more_horiz),
   ];
 
   // Danh sách sản phẩm giả
@@ -280,17 +283,12 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.shopping_cart_outlined,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            // Navigate to cart
-                            // Navigator.pushNamed(context, '/cart');
+                        ),                        const SizedBox(width: 8),
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(context, AppRouter.cart);
                           },
+                          child: const CartIconWithBadge(),
                         ),
                         IconButton(
                           icon: const Icon(
@@ -390,32 +388,41 @@ class _HomePageState extends State<HomePage> {
                         itemCount: _categories.length,
                         itemBuilder: (context, index) {
                           final category = _categories[index];
-                          return Column(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: isDarkMode ? Colors.grey[900] : const Color(0xFFF5F5F5),
-                                  borderRadius: BorderRadius.circular(8),
+                          return GestureDetector(
+                            onTap: () {
+                              // Navigate based on category
+                              if (category.id == '10') { // LiveStream category
+                                Navigator.pushNamed(context, '/livestream-list');
+                              }
+                              // Handle other categories...
+                            },
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: isDarkMode ? Colors.grey[900] : const Color(0xFFF5F5F5),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Icon(
+                                    category.iconData,
+                                    color: const Color.fromARGB(255, 0, 0, 0),
+                                    size: 24,
+                                  ),
                                 ),
-                                child: Icon(
-                                  category.iconData,
-                                  color: const Color.fromARGB(255, 0, 0, 0),
-                                  size: 24,
+                                const SizedBox(height: 4),
+                                Text(
+                                  category.name,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: isDarkMode ? Colors.white70 : Colors.black87,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                category.name,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: isDarkMode ? Colors.white70 : Colors.black87,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+                              ],
+                            ),
                           );
                         },
                       ),

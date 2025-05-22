@@ -39,6 +39,21 @@ dependencies:
   get_it: ^7.6.0 # Dependency Injection.
   equatable: ^2.0.5 # So sánh các object với nhau BLoC.
   flutter_carousel_widget: ^2.2.0
+    # WebRTC dependencies
+  flutter_webrtc: ^0.9.47 # WebRTC for Flutter
+  web_socket_channel: ^2.4.0 # WebSocket để kết nối livestream
+  # flutter_rtmp_publisher: ^1.0.0 # Publish RTMP stream
+  # flutter_rtmp_player: ^1.0.0 # Play RTMP stream
+  
+  # UI and animation
+  cached_network_image: ^3.3.1 # Cache images for better performance
+  flutter_svg: ^2.0.9 # SVG support
+  lottie: ^2.6.0 # Lottie animations
+  google_fonts: ^6.1.0 # Google fonts
+  
+  # Cart feature
+  shared_preferences: ^2.2.2 # Local storage for cart
+  uuid: ^4.1.0 # Generate unique IDs
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
